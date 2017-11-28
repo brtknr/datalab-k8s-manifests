@@ -92,3 +92,13 @@ shinyServer:
 threddsServer:
   imageName: unidata/thredds-docker
   version: 4.6.10
+discourseStack:
+  discourseSiteName: "DataLabs"
+  discourseImageName: nerc/discourse
+  discourseImageVersion: "1.8.10-r0"
+  sidekiqImageName: bitnami/discourse
+  sidekiqImageVersion: "1.8.10-r0"
+  postgresqlImageName: bitnami/postgresql
+  postgresqlImageVersion: "9.6"
+  redisImageName: bitnami/redis
+  redisImageVersion: "4.0"
