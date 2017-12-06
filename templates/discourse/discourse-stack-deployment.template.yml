@@ -17,18 +17,14 @@ spec:
           image: {{ &discourseStack.discourseImageName }}:{{ &discourseStack.discourseImageVersion }}
           imagePullPolicy: IfNotPresent
           env:
+            - name: DISCOURSE_HOSTNAME
+              value: testlab-discourse.test-datalabs.nerc.ac.uk
             - name: DISCOURSE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: discourse-secret
-                  key: discoursePassword
+              value: bitnami1
             - name: DISCOURSE_POSTGRESQL_NAME
               value: bitnami_application
             - name: DISCOURSE_POSTGRESQL_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: discourse-secret
-                  key: postgresqlPassword
+              value: bitnami1
             - name: DISCOURSE_POSTGRESQL_USERNAME
               value: bn_discourse
             - name: DISCOURSE_SITE_NAME
@@ -36,10 +32,7 @@ spec:
             - name: POSTGRESQL_CLIENT_CREATE_DATABASE_NAME
               value: bitnami_application
             - name: POSTGRESQL_CLIENT_CREATE_DATABASE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: discourse-secret
-                  key: postgresqlPassword
+              value: bitnami1
             - name: POSTGRESQL_CLIENT_CREATE_DATABASE_USERNAME
               value: bn_discourse
             - name: POSTGRESQL_HOST
@@ -47,44 +40,28 @@ spec:
             - name: POSTGRESQL_PORT_NUMBER
               value: "5432"
             - name: POSTGRESQL_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: discourse-secret
-                  key: postgresqlPassword
+              value: bitnami1
             - name: POSTGRESQL_ROOT_USER
               value: postgres
             - name: REDIS_HOST
               value: localhost
             - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: discourse-secret
-                  key: redisPassword
+              value: bitnami1
             - name: REDIS_PORT_NUMBER
               value: "6379"
           ports:
             - containerPort: 3000
-          volumeMounts:
-            - name: discourse-data
-              mountPath: /bitnami/discourse
-              subPath: discourse/discourse
         - name: sidekiq
           image: {{ &discourseStack.sidekiqImageName }}:{{ &discourseStack.sidekiqImageVersion }}
           imagePullPolicy: IfNotPresent
           command: ["./app-entrypoint.sh", "nami", "start", "--foreground", "discourse-sidekiq"]
           env:
             - name: DISCOURSE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: discourse-secret
-                  key: discoursePassword
+              value: bitnami1
             - name: DISCOURSE_POSTGRESQL_NAME
               value: bitnami_application
             - name: DISCOURSE_POSTGRESQL_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: discourse-secret
-                  key: postgresqlPassword
+              value: bitnami1
             - name: DISCOURSE_POSTGRESQL_USERNAME
               value: bn_discourse
             - name: DISCOURSE_SITE_NAME
@@ -92,10 +69,7 @@ spec:
             - name: POSTGRESQL_CLIENT_CREATE_DATABASE_NAME
               value: bitnami_application
             - name: POSTGRESQL_CLIENT_CREATE_DATABASE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: discourse-secret
-                  key: postgresqlPassword
+              value: bitnami1
             - name: POSTGRESQL_CLIENT_CREATE_DATABASE_USERNAME
               value: bn_discourse
             - name: POSTGRESQL_HOST
@@ -103,55 +77,27 @@ spec:
             - name: POSTGRESQL_PORT_NUMBER
               value: "5432"
             - name: POSTGRESQL_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: discourse-secret
-                  key: postgresqlPassword
+              value: bitnami1
             - name: POSTGRESQL_ROOT_USER
               value: postgres
             - name: REDIS_HOST
               value: localhost
             - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: discourse-secret
-                  key: redisPassword
+              value: bitnami1
             - name: REDIS_PORT_NUMBER
               value: "6379"
-          volumeMounts:
-            - name: discourse-data
-              mountPath: /bitnami/discourse
-              subPath: discourse/sidekiq
         - name: postgresql
           image: {{ &discourseStack.postgresqlImageName }}:{{ &discourseStack.postgresqlImageVersion }}
           imagePullPolicy: IfNotPresent
           env:
             - name: POSTGRESQL_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: discourse-secret
-                  key: postgresqlPassword
-          volumeMounts:
-            - name: discourse-data
-              mountPath: /bitnami/postgresql
-              subPath: discourse/postgresql
+              value: bitnami1
         - name: redis
           image: {{ &discourseStack.redisImageName }}:{{ &discourseStack.redisImageVersion }}
           imagePullPolicy: IfNotPresent
           env:
             - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: discourse-secret
-                  key: redisPassword
-          volumeMounts:
-            - name: discourse-data
-              mountPath: /bitnami/redis
-              subPath: discourse/redis
-      volumes:
-        - name: discourse-data
-          persistentVolumeClaim:
-            claimName: testlab-internal-claim
+              value: bitnami1
 ---
 apiVersion: v1
 kind: Service
@@ -161,26 +107,8 @@ metadata:
 spec:
   ports:
     - name: http
-      port: 3000
+      port: 80
       targetPort: 3000
   selector:
     app: discourse-stack
   type: NodePort
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: discourse-stack-ingress
-  namespace: {{ namespace }}
-  annotations:
-    ingress.kubernetes.io/auth-url: {{ &authUrl }}
-    ingress.kubernetes.io/auth-signin: {{ &authSignin }}
-spec:
-  rules:
-  - host: testlab-discourse.test-datalabs.nerc.ac.uk
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: discourse-stack-service
-          servicePort: 3000

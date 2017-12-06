@@ -1,0 +1,50 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mockbin-deployment
+  namespace: test
+spec:
+  template:
+    metadata:
+      labels:
+        app: mockbin
+    spec:
+      containers:
+        - name: mockbin
+          image: kennethreitz/httpbin
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mockbin-service
+  namespace: test
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+  selector:
+    app: mockbin
+  type: NodePort
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: mockbin-ingress
+  namespace: test
+  annotations:
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      more_set_headers "X-Forwarded-Port $pass_port";
+      more_set_headers "X-Forwarded-Proto $pass_access_scheme";
+spec:
+  rules:
+  - host:  mist.ag.rl.ac.uk
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: mockbin-service
+          servicePort: 80
