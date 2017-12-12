@@ -1,0 +1,18 @@
+Completed 200 OK in 132ms (ActiveRecord: 3.2ms)
+Started GET "/auth/auth0/callback?code=m-3o6sfr0b0SPtSv" for 172.17.0.3 at 2017-12-07 08:42:28 +0000
+(auth0) Setup endpoint detected, running now.
+(auth0) Callback phase initiated.
+(auth0) Authentication failure! invalid_credentials: OAuth2::Error, unauthorized_client: The redirect URI is wrong. You send https://datalab.local:80, and we expected https://datalab.local
+{"error":"unauthorized_client","error_description":"The redirect URI is wrong. You send https://datalab.local:80, and we expected https://datalab.local"}
+Started GET "/auth/failure?message=invalid_credentials&strategy=auth0" for 172.17.0.3 at 2017-12-07 08:42:29 +0000
+Processing by Users::OmniauthCallbacksController#failure as HTML
+  Parameters: {"message"=>"invalid_credentials", "strategy"=>"auth0"}
+  Rendered layouts/_head.html.erb (2.0ms)
+  Rendered common/_special_font_face.html.erb (8.4ms)
+  Rendered common/_discourse_stylesheet.html.erb (3.7ms)
+  Rendered users/omniauth_callbacks/failure.html.erb within layouts/no_ember (34.1ms)
+  Rendered layouts/_head.html.erb (0.6ms)
+  Rendered common/_special_font_face.html.erb (0.5ms)
+  Rendered common/_discourse_stylesheet.html.erb (0.5ms)
+  Rendered application/_header.html.erb (1.0ms)
+Completed 200 OK in 117ms (Views: 65.6ms | ActiveRecord: 0.0ms)

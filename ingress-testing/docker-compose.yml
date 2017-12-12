@@ -1,10 +1,13 @@
 version: '3'
 services:
   nginx:
-    image: nginx:1.13.3
+    image: tekn0ir/nginx-stream
     ports:
+    - 80:80
     - 443:443
     volumes:
     - ${PWD}/tls.key:/etc/ssl/private/datalabskey.pem
     - ${PWD}/tls.crt:/etc/ssl/certs/datalabs.pem
-    - ${PWD}/datalab.conf:/etc/nginx/conf.d/datalab.conf
+    #- ${PWD}/datalab.conf:/etc/nginx/conf.d/datalab.conf
+    # - ${PWD}/nginx.conf:/etc/nginx/nginx.conf
+    - ${PWD}/stream.conf:/opt/nginx/stream.conf.d/stream.conf

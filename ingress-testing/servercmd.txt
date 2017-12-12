@@ -1,0 +1,72 @@
+kc cp ~/.mitmproxy//mitmproxy-ca-cert.crt test/discourse-stack-deployment-597fcb55b6-tpnkt:/usr/share/ca-certificates/extra
+
+vi ./vendor/bundle/ruby/2.3.0/gems/omniauth-1.6.1/lib/omniauth/strategy.rb
+RAILS_ENV=production bundle exec rake assets:precompile
+
+    1  ls
+    2  cd bitnami/
+    3  ls
+    4  cd discourse/
+    5  ls
+    6  cd public/
+    7  ls
+    8  cd ../../..
+    9  ls
+   10  cd opt/
+   11  ls
+   12  cd bitnami/
+   13  ls
+   14  cd discourse
+   15  ls
+   16  cd app/controllers/users
+   17  ls
+   18  less omniauth_callbacks_controller.rb 
+   19  cat omniauth_callbacks_controller.rb 
+   20  ps aux
+   21  exit
+   22  export https_proxy=https://192.168.1.66:8080
+   23  export http_proxy=http://192.168.1.66:8080
+   24  curl bbc.co.uk
+   25  curl https://bbc.co.uk
+   26  curl https://bbc.co.uk --insecure
+   27  sudo /opt/bitnami/ctlscript.sh
+   28  cd /opt/bitnami/
+   29  ls
+   30  cd discourse
+   31  ls
+   32  mkdir /usr/share/ca-certificates/extra
+   33  ls
+   34  cd /usr/share/ca-certificates/extra
+   35  ls
+   36  ll
+   37  ls -al
+   38  exit
+   39  ls
+   40  cd /usr/share/ca-certificates/
+   41  ls
+   42  mv mitmproxy-ca-cert.crt extra/
+   43  ls
+   44  cd extra/
+   45  ls
+   46  dpkg-reconfigure ca-certificates
+   47  dpkg-reconfigure ca-certificates
+   48  curl https://bbc.co.uk
+   49  update-ca-certificates
+   50  sudo cp mitmproxy-ca-cert.crt /usr/local/share/ca-certificates/mitmproxy-ca-cert.crt
+   51  update-ca-certificates
+   52  curl https://bbc.co.uk
+   53  curl https://bbc.co.uk --cacert /usr/local/share/ca-certificates/mitmproxy-ca-cert.crt
+   54  less mitmproxy-ca-cert.crt 
+   55  more mitmproxy-ca-cert.crt 
+   56  RAILS_ENV=production bundle exec rake assets:precompile
+   57  cd /opt/bitnami/discourse
+   58  ls
+   59* 
+   60  curl https://bbc.co.uk --insecure
+   61  export https_proxy=https://192.168.1.66:8080
+   62  curl https://bbc.co.uk --insecure
+   63  export https_proxy=https://10.1.25.107:8080
+   64  curl https://bbc.co.uk --insecure
+   65  curl https://bbc.co.uk
+   66  RAILS_ENV=production bundle exec rake assets:precompile
+   67  https_proxy=https://10.1.25.107:8080 RAILS_ENV=production bundle exec rake assets:precompile
