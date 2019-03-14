@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A Helm chart for NERC Datalab
+name: nerc-datalab
+version: 0.23.0

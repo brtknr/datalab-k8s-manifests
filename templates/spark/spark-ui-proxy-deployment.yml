@@ -5,18 +5,18 @@ metadata:
   labels:
     name: spark-ui-proxy
   name: spark-ui-proxy
-  namespace: {{ namespace }}
+  namespace: {{ .Values.namespace }}
 spec:
   replicas: 1
   template:
     metadata:
       labels:
         name: spark-ui-proxy
-        environment: {{ environment }}
+        environment: {{ .Values.environment }}
     spec:
       containers:
       - name: spark-ui-proxy
-        image: {{ &sparkProxy.imageName }}:{{ sparkProxy.version }}
+        image: {{ .Values.sparkProxy.imageName }}:{{ .Values.sparkProxy.version }}
         ports:
           - containerPort: 80
         resources:
@@ -35,7 +35,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: spark-ui-proxy
-  namespace: {{ namespace }}
+  namespace: {{ .Values.namespace }}
 spec:
   ports:
     - port: 80
@@ -48,17 +48,17 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: spark-ingress
-  namespace: {{ namespace }}
+  namespace: {{ .Values.namespace }}
   annotations:
-    ingress.kubernetes.io/auth-url: {{ &authService }}/auth
-    ingress.kubernetes.io/auth-signin: {{ &authSignin }}
+    ingress.kubernetes.io/auth-url: {{ .Values.authService }}/auth
+    ingress.kubernetes.io/auth-signin: {{ .Values.authSignin }}
 spec:
   tls:
   - hosts:
-    - {{ datalabName }}-spark.{{ domain }}
+    - {{ .Values.datalabName }}-spark.{{ .Values.domain }}
     secretName: tls-secret
   rules:
-  - host: {{ datalabName }}-spark.{{ domain }}
+  - host: {{ .Values.datalabName }}-spark.{{ .Values.domain }}
     http:
       paths:
       - path: /

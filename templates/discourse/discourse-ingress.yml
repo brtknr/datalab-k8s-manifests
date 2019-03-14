@@ -2,27 +2,27 @@ kind: Service
 apiVersion: v1
 metadata:
   name: discourse-proxy
-  namespace: {{ namespace }}
+  namespace: {{ .Values.namespace }}
 spec:
   ports:
   - protocol: TCP
     port: 80
     targetPort: 80
   type: ExternalName
-  externalName: {{ discourseHostName }}
+  externalName: {{ .Values.discourseHostName }}
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: discourse-proxy
-  namespace: {{ namespace }}
+  namespace: {{ .Values.namespace }}
 spec:
   tls:
   - hosts:
-    - discourse.{{ domain }}
+    - discourse.{{ .Values.domain }}
     secretName: tls-secret
   rules:
-  - host: discourse.{{ domain }}
+  - host: discourse.{{ .Values.domain }}
     http:
       paths:
       - path: /

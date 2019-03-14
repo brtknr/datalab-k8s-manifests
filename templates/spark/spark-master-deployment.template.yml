@@ -3,7 +3,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: spark-master
-  namespace: {{ namespace }}
+  namespace: {{ .Values.namespace }}
   labels:
     name: spark-master
 spec:
@@ -12,13 +12,13 @@ spec:
     metadata:
       labels:
         name: spark-master
-        environment: {{ environment }}
+        environment: {{ .Values.environment }}
     spec:
       securityContext:
         runAsUser: 0
       containers:
       - name : spark-master
-        image: {{ &sparkMaster.imageName }}:{{ sparkMaster.version }}
+        image: {{ .Values.sparkMaster.imageName }}:{{ .Values.sparkMaster.version }}
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
@@ -29,7 +29,7 @@ spec:
         - name: SPARK_ROLE
           value: MASTER
         - name: R_LIBS_USER
-          value: {{ &sharedRLibs }}
+          value: {{ .Values.sharedRLibs }}
         volumeMounts:
           - mountPath: /data
             name: glusterfsvol
@@ -43,4 +43,4 @@ spec:
       volumes:
         - name: glusterfsvol
           persistentVolumeClaim:
-            claimName: {{ datalabVolume }}-claim
+            claimName: {{ .Values.datalabVolume }}-claim

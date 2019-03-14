@@ -3,18 +3,18 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: dask-scheduler-deployment
-  namespace: {{ namespace }}
+  namespace: {{ .Values.namespace }}
 spec:
   replicas: 1
   template:
     metadata:
       labels:
         app: dask-scheduler
-        environment: {{ environment }}
+        environment: {{ .Values.environment }}
     spec:
       containers:
         - name: dask-scheduler
-          image: {{ &daskScheduler.imageName }}:{{ daskScheduler.version }}
+          image: {{ .Values.daskScheduler.imageName }}:{{ .Values.daskScheduler.version }}
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8787

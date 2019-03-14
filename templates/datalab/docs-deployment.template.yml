@@ -2,21 +2,21 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: docs-deployment
-  namespace: {{ namespace }}
+  namespace: {{ .Values.namespace }}
 spec:
-  replicas: {{ datalabDocs.replicas }}
+  replicas: {{ .Values.datalabDocs.replicas }}
   revisionHistoryLimit: 3
   template:
     metadata:
       labels:
         app: docs
-        environment: {{ environment }}
+        environment: {{ .Values.environment }}
       annotations:
-        container.apparmor.security.beta.kubernetes.io/docs: {{ &datalabDocs.policy }}
+        container.apparmor.security.beta.kubernetes.io/docs: {{ .Values.datalabDocs.policy }}
     spec:
       containers:
         - name: docs
-          image: {{ &datalabDocs.imageName }}:{{ datalabVersion }}
+          image: {{ .Values.datalabDocs.imageName }}:{{ .Values.datalabVersion }}
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
@@ -31,7 +31,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: docs-service
-  namespace: {{ namespace }}
+  namespace: {{ .Values.namespace }}
 spec:
   ports:
     - name: http
@@ -45,14 +45,14 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: datalab-docs-ingress
-  namespace: {{ namespace }}
+  namespace: {{ .Values.namespace }}
 spec:
   tls:
   - hosts:
-    - {{ datalabName }}-docs.{{ domain }}
+    - {{ .Values.datalabName }}-docs.{{ .Values.domain }}
     secretName: tls-secret
   rules:
-  - host: {{ datalabName }}-docs.{{ domain }}
+  - host: {{ .Values.datalabName }}-docs.{{ .Values.domain }}
     http:
       paths:
       - path: /

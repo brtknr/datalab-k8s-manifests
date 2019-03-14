@@ -3,18 +3,18 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: dask-workers-deployment
-  namespace: {{ namespace }}
+  namespace: {{ .Values.namespace }}
 spec:
-  replicas: {{ daskWorker.replicas }}
+  replicas: {{ .Values.daskWorker.replicas }}
   template:
     metadata:
       labels:
         app: dask-workers
-        environment: {{ environment }}
+        environment: {{ .Values.environment }}
     spec:
       containers:
       - name: dask-worker
-        image: {{ &daskWorker.imageName }}:{{ daskWorker.version }}
+        image: {{ .Values.daskWorker.imageName }}:{{ .Values.daskWorker.version }}
         imagePullPolicy: IfNotPresent
         env:
           - name: DASK_ROLE

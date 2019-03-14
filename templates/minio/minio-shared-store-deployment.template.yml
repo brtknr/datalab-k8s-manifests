@@ -3,15 +3,15 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   labels:
-      name: minio-{{ datalabVolume }}
-  name: minio-{{ datalabVolume }}-deployment
-  namespace: {{ namespace }}
+      name: minio-{{ .Values.datalabVolume }}
+  name: minio-{{ .Values.datalabVolume }}-deployment
+  namespace: {{ .Values.namespace }}
 spec:
-  replicas: {{ minio.replicas }}
+  replicas: {{ .Values.minio.replicas }}
   template:
     metadata:
       labels:
-        name: minio-{{ datalabVolume }}
+        name: minio-{{ .Values.datalabVolume }}
         user-pod: minio
     spec:
       initContainers:
@@ -25,7 +25,7 @@ spec:
               name: glusterfsvol
       containers:
         - name: minio
-          image: {{ &minio.imageName }}:{{ minio.version }}
+          image: {{ .Values.minio.imageName }}:{{ .Values.minio.version }}
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 9000
@@ -52,13 +52,13 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 10
         - name: minio-connect
-          image: {{ &minio.connectImage }}:{{ minio.connectVersion }}
+          image: {{ .Values.minio.connectImage }}:{{ .Values.minio.connectVersion }}
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
           env:
             - name: ORIGIN
-              value: {{ domain }}
+              value: {{ .Values.domain }}
             - name: ACTIONS
               value: "['set']"
           livenessProbe:
@@ -70,49 +70,49 @@ spec:
       volumes:
         - name: glusterfsvol
           persistentVolumeClaim:
-            claimName: {{ datalabVolume }}-claim
+            claimName: {{ .Values.datalabVolume }}-claim
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: minio-{{ datalabVolume }}
-  namespace: {{ namespace }}
+  name: minio-{{ .Values.datalabVolume }}
+  namespace: {{ .Values.namespace }}
 spec:
   ports:
-    - name: minio-{{ datalabVolume }}-ui
+    - name: minio-{{ .Values.datalabVolume }}-ui
       port: 80
       targetPort: 9000
-    - name: minio-{{ datalabVolume }}-connect
+    - name: minio-{{ .Values.datalabVolume }}-connect
       port: 81
       targetPort: 80
   selector:
-    name: minio-{{ datalabVolume }}
+    name: minio-{{ .Values.datalabVolume }}
   type: NodePort
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: minio-{{ datalabVolume }}
-  namespace: {{ namespace }}
+  name: minio-{{ .Values.datalabVolume }}
+  namespace: {{ .Values.namespace }}
   annotations:
-    ingress.kubernetes.io/auth-url: {{ &authService }}/auth
-    ingress.kubernetes.io/auth-signin: {{ &authSignin }}
-    ingress.kubernetes.io/proxy-body-size: {{ &maxBodySize }}
+    ingress.kubernetes.io/auth-url: {{ .Values.authService }}/auth
+    ingress.kubernetes.io/auth-signin: {{ .Values.authSignin }}
+    ingress.kubernetes.io/proxy-body-size: {{ .Values.maxBodySize }}
     ingress.kubernetes.io/rewrite-target: /
 spec:
   tls:
   - hosts:
-    - {{ datalabName }}-{{ datalabVolume }}.{{ domain }}
+    - {{ .Values.datalabName }}-{{ .Values.datalabVolume }}.{{ .Values.domain }}
     secretName: tls-secret
   rules:
-  - host: {{ datalabName }}-{{ datalabVolume }}.{{ domain }}
+  - host: {{ .Values.datalabName }}-{{ .Values.datalabVolume }}.{{ .Values.domain }}
     http:
       paths:
         - path: /
           backend:
-            serviceName: minio-{{ datalabVolume }}
+            serviceName: minio-{{ .Values.datalabVolume }}
             servicePort: 80
         - path: /connect
           backend:
-            serviceName: minio-{{ datalabVolume }}
+            serviceName: minio-{{ .Values.datalabVolume }}
             servicePort: 81
